@@ -1,0 +1,10 @@
+{
+  "name": "@eco-grid/ai",
+  "version": "1.0.0",
+  "main": "./adapters/index.js",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.17.1",
+    "dotenv": "^16.4.1"
+  }
+}

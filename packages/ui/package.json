@@ -1,0 +1,12 @@
+{
+  "name": "@eco-grid/ui",
+  "version": "1.0.0",
+  "main": "./components/index.js",
+  "type": "module",
+  "dependencies": {
+    "react": "^18.2.0",
+    "lucide-react": "^0.344.0",
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.1"
+  }
+}
