@@ -4,7 +4,7 @@
   "main": "./adapters/index.js",
   "type": "module",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.17.1",
+    "@anthropic-ai/sdk": "^0.17.2",
     "dotenv": "^16.4.1"
   }
 }
