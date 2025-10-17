@@ -10,7 +10,7 @@
     "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
     "dev:web": "npm run dev --workspace=apps/web",
     "dev:api": "npm run dev --workspace=apps/api",
-    "build": "npm run build --workspaces",
+    "build": "npm install --workspaces && npm run build --workspaces",
     "lint": "eslint . --ext .js,.jsx",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\""
   },
