@@ -1,5 +1,13 @@
+// ✅ Load environment variables explicitly from apps/api/.env
 import dotenv from "dotenv";
-dotenv.config(); // ✅ safer than "dotenv/config", works on Render too
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ This ensures the correct .env file is loaded no matter where npm is run (root or api)
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import express from "express";
 import cors from "cors";
@@ -124,4 +132,11 @@ app.listen(PORT, () => {
   console.log(`✅ Eco-Grid API running on http://localhost:${PORT}`);
   console.log(`📚 API docs: http://localhost:${PORT}/api`);
   console.log(`💚 Health check: http://localhost:${PORT}/api/health`);
+
+  // ✅ Quick confirmation for Anthropic key (no exposure)
+  if (process.env.ANTHROPIC_API_KEY) {
+    console.log("🤖 Claude API key detected successfully ✅");
+  } else {
+    console.warn("❌ Anthropic API key missing. Check apps/api/.env");
+  }
 });

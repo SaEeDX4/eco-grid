@@ -1,17 +1,41 @@
 // apps/api/src/services/aiService.js
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import ClaudeAdapter from "./claude.js";
 
-const claude = new ClaudeAdapter();
+// ✅ Explicitly load .env (important when API runs standalone or via Render)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
+
+// ✅ Lazy singleton — create only when first used and after env is loaded
+let claudeInstance = null;
+function getClaude() {
+  if (!claudeInstance) {
+    const key = process.env.ANTHROPIC_API_KEY;
+    if (!key || !key.startsWith("sk-ant-")) {
+      console.warn("❌ Anthropic API key missing or invalid in getClaude().");
+      return null;
+    }
+    claudeInstance = new ClaudeAdapter(key);
+  }
+  return claudeInstance;
+}
 
 export const getAIExplanation = async (schedule, mode, savings) => {
+  const deviceCount = schedule?.length || 0;
+  const offPeakDevices =
+    schedule?.filter((d) => d.startHour >= 0 && d.startHour < 7) || [];
+  const peakDevices =
+    schedule?.filter((d) => d.startHour >= 16 && d.startHour < 21) || [];
+
   try {
-    const deviceCount = schedule.length;
-    const offPeakDevices = schedule.filter(
-      (d) => d.startHour >= 0 && d.startHour < 7
-    );
-    const peakDevices = schedule.filter(
-      (d) => d.startHour >= 16 && d.startHour < 21
-    );
+    const claude = getClaude();
+    if (!claude || !claude.client) {
+      console.warn("⚠️ Claude client not initialized in getAIExplanation()");
+      throw new Error("Claude client unavailable");
+    }
 
     const prompt = `You are an energy optimization expert explaining a smart home energy plan to a homeowner.
 
@@ -63,7 +87,6 @@ DO NOT include any text outside the JSON object.`;
 
     const responseText = await claude.complete(prompt, { maxTokens: 1500 });
 
-    // Clean and parse response
     let cleanResponse = responseText?.trim() || "";
     cleanResponse = cleanResponse
       .replace(/```json\n?/g, "")
@@ -75,16 +98,13 @@ DO NOT include any text outside the JSON object.`;
   } catch (error) {
     console.error("AI explanation error:", error);
 
-    // Fallback explanation
     return {
       summary: `This ${mode} optimization plan helps you save money by shifting flexible devices to off-peak hours when electricity rates are lower. You'll save approximately $${
         savings?.monthlySavings?.toFixed(2) || 0
       } per month while maintaining comfort and convenience.`,
       steps: [
-        `Analyzed your ${schedule.length} devices and their power consumption patterns`,
-        `Identified ${
-          offPeakDevices.length
-        } flexible devices that can run during cheaper off-peak hours (12 AM - 6 AM)`,
+        `Analyzed your ${deviceCount} devices and their power consumption patterns`,
+        `Identified ${offPeakDevices.length} flexible devices that can run during cheaper off-peak hours (12 AM - 6 AM)`,
         `Kept essential devices running during your preferred times`,
         `Ensured total power usage never exceeds your home's capacity`,
         `Calculated potential savings of $${
@@ -106,7 +126,7 @@ DO NOT include any text outside the JSON object.`;
         {
           title: "Consider battery storage",
           description:
-            "Store cheap off-peak energy in a home battery to use during expensive peak hours, saving an additional 15-20%",
+            "Store cheap off-peak energy in a home battery to use during expensive peak hours, saving an additional 15–20%",
         },
       ],
     };
@@ -119,6 +139,14 @@ export const getSavingsRecommendation = async (
   tariff
 ) => {
   try {
+    const claude = getClaude();
+    if (!claude || !claude.client) {
+      console.warn(
+        "⚠️ Claude client not initialized in getSavingsRecommendation()"
+      );
+      throw new Error("Claude client unavailable");
+    }
+
     const prompt = `You are an energy optimization advisor. Based on the user's current energy usage, provide ONE specific, actionable recommendation to save money.
 
 Current Usage:
