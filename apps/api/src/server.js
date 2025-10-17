@@ -1,4 +1,3 @@
-// apps/api/src/server.js
 import dotenv from "dotenv";
 dotenv.config(); // ✅ safer than "dotenv/config", works on Render too
 
@@ -29,16 +28,38 @@ if (!process.env.MONGODB_URI) {
   );
 }
 
-// Middleware
+// ✅ Security middleware
 app.use(helmet());
-app.use(cors());
+
+// ✅ CORS — allow your local + Render frontend
+const allowedOrigins = [
+  "http://localhost:5173", // local dev
+  "https://eco-grid.onrender.com", // Render static frontend
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow if no origin (like Postman) or in allowed list
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      console.warn(`🚫 Blocked CORS request from origin: ${origin}`);
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Connect to MongoDB
+// ✅ Connect to MongoDB
 connectDB();
 
-// Health check
+// ✅ Health check
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
@@ -47,7 +68,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// Routes
+// ✅ Routes
 app.use("/api/ai", aiRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
@@ -59,7 +80,7 @@ app.use("/api/partners", partnersRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/chat", chatRoutes);
 
-// Root
+// ✅ Root
 app.get("/api", (req, res) => {
   res.json({
     message: "Welcome to Eco-Grid API",
@@ -81,7 +102,7 @@ app.get("/api", (req, res) => {
   });
 });
 
-// 404
+// ✅ 404
 app.use((req, res) => {
   res.status(404).json({
     error: "Not Found",
@@ -89,16 +110,16 @@ app.use((req, res) => {
   });
 });
 
-// Error handler
+// ✅ Error handler
 app.use((err, req, res, next) => {
-  console.error("Error:", err);
+  console.error("Error:", err.message);
   res.status(err.status || 500).json({
     error: err.message || "Internal Server Error",
     ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
   });
 });
 
-// Start server
+// ✅ Start server
 app.listen(PORT, () => {
   console.log(`✅ Eco-Grid API running on http://localhost:${PORT}`);
   console.log(`📚 API docs: http://localhost:${PORT}/api`);
