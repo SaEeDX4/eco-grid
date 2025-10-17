@@ -10,9 +10,8 @@
     "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
     "dev:web": "npm run dev --workspace=apps/web",
     "dev:api": "npm run dev --workspace=apps/api",
-    "build": "npm run install:ai && npm run build --workspaces",
-    "install:ai": "cd packages/ai && npm install && cd ../..",
-    "start": "npm run install:ai && node src/server.js",
+    "build": "npm install --workspaces && cd packages/ai && npm install && cd ../.. && npm run build --workspaces",
+    "start": "cd packages/ai && npm install && cd ../.. && node src/server.js",
     "lint": "eslint . --ext .js,.jsx",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\""
   },
