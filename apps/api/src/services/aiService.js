@@ -1,13 +1,16 @@
-import { generate as claudeGenerate } from "../../../packages/ai/adapters/claude.js";
+// apps/api/src/services/aiService.js
+import ClaudeAdapter from "./claude.js";
+
+const claude = new ClaudeAdapter();
 
 export const getAIExplanation = async (schedule, mode, savings) => {
   try {
     const deviceCount = schedule.length;
     const offPeakDevices = schedule.filter(
-      (d) => d.startHour >= 0 && d.startHour < 7,
+      (d) => d.startHour >= 0 && d.startHour < 7
     );
     const peakDevices = schedule.filter(
-      (d) => d.startHour >= 16 && d.startHour < 21,
+      (d) => d.startHour >= 16 && d.startHour < 21
     );
 
     const prompt = `You are an energy optimization expert explaining a smart home energy plan to a homeowner.
@@ -27,7 +30,7 @@ ${schedule
     (d) =>
       `- ${d.deviceName}: ${d.startHour}:00 - ${d.endHour}:00 (${(
         d.powerW / 1000
-      ).toFixed(2)}kW)`,
+      ).toFixed(2)}kW)`
   )
   .join("\n")}
 
@@ -58,10 +61,10 @@ Respond ONLY with valid JSON in this exact format:
 
 DO NOT include any text outside the JSON object.`;
 
-    const response = await claudeGenerate(prompt, { max_tokens: 1500 });
+    const responseText = await claude.complete(prompt, { maxTokens: 1500 });
 
     // Clean and parse response
-    let cleanResponse = response.text?.trim() || response.trim();
+    let cleanResponse = responseText?.trim() || "";
     cleanResponse = cleanResponse
       .replace(/```json\n?/g, "")
       .replace(/```\n?/g, "")
@@ -113,7 +116,7 @@ DO NOT include any text outside the JSON object.`;
 export const getSavingsRecommendation = async (
   currentUsage,
   devices,
-  tariff,
+  tariff
 ) => {
   try {
     const prompt = `You are an energy optimization advisor. Based on the user's current energy usage, provide ONE specific, actionable recommendation to save money.
@@ -138,8 +141,8 @@ Provide ONE specific recommendation in 1-2 sentences that:
 
 Respond with ONLY the recommendation text, no JSON or formatting.`;
 
-    const response = await claudeGenerate(prompt, { max_tokens: 200 });
-    return response.text?.trim() || response.trim();
+    const responseText = await claude.complete(prompt, { maxTokens: 200 });
+    return responseText?.trim() || "";
   } catch (error) {
     console.error("Savings recommendation error:", error);
     return "Try shifting your largest flexible loads (like EV charging or water heating) to off-peak hours (12 AM - 6 AM) to save up to 35% on those devices.";

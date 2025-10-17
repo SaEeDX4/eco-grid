@@ -1,4 +1,5 @@
-import ClaudeAdapter from "../../../../packages/ai/adapters/claude.js";
+// apps/api/src/controllers/aiController.js
+import ClaudeAdapter from "../services/claude.js";
 
 // API key از env خونده میشه
 const claude = new ClaudeAdapter(process.env.ANTHROPIC_API_KEY);
@@ -33,7 +34,7 @@ DO NOT include any text outside the JSON object.`;
     const response = await claude.complete(prompt, { maxTokens: 200 });
 
     // Parse the JSON response
-    let cleanResponse = response.trim();
+    let cleanResponse = response?.trim() || "";
     cleanResponse = cleanResponse
       .replace(/```json\n?/g, "")
       .replace(/```\n?/g, "")
