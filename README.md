@@ -1,6 +1,7 @@
 # Eco-Grid Energy Management Platform
 
-A comprehensive energy management platform for households and SMEs in Canada (BC/Vancouver).
+Eco-Grid — Smart Energy Optimization Platform (React + Express + MongoDB + AI)  
+A comprehensive energy management system for households and SMEs in British Columbia (Vancouver).
 
 ## Project Structure
 
@@ -15,5 +16,7 @@ A comprehensive energy management platform for households and SMEs in Canada (BC
 ## Setup
 
 1. Install dependencies:
+
 ```bash
 npm install
+```
