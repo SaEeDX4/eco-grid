@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ChatProvider } from "./context/ChatContext"; // ✅ Added ChatProvider
+import { TranslationProvider } from "./context/TranslationContext"; // ✅ Added TranslationProvider
 import { useToast } from "./hooks/useToast";
 import { ToastContainer } from "./components/ui/Toast";
 import Navbar from "./components/layout/Navbar";
@@ -24,6 +25,10 @@ import ReportsPage from "./pages/ReportsPage"; // ✅ Added for Module 6
 import PartnersPage from "./pages/PartnersPage"; // ✅ Added for Module 14
 import ContactPage from "./pages/ContactPage"; // ✅ Added for Module 9
 import PricingPage from "./pages/PricingPage"; // ✅ Added for Module 10
+
+// ✅ New imports from Claude instruction
+import SUVPage from "./pages/SUVPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 function AppContent() {
   const { toasts, removeToast } = useToast();
@@ -110,6 +115,30 @@ function AppContent() {
           }
         />
 
+        {/* ✅ Added Startup Visa Route */}
+        <Route
+          path="/startup-visa"
+          element={
+            <>
+              <Navbar />
+              <SUVPage />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* ✅ Added Privacy Policy Route */}
+        <Route
+          path="/privacy-policy"
+          element={
+            <>
+              <Navbar />
+              <PrivacyPolicyPage />
+              <Footer />
+            </>
+          }
+        />
+
         {/* 🔐 Auth Routes */}
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/auth/signup" element={<SignupPage />} />
@@ -188,14 +217,16 @@ function App() {
   return (
     <AuthProvider>
       <ChatProvider>
-        <Router>
-          <div className="min-h-screen bg-background">
-            <AppContent />
-          </div>
+        <TranslationProvider>
+          <Router>
+            <div className="min-h-screen bg-background">
+              <AppContent />
+            </div>
 
-          {/* ✅ Chat Launcher visible on all pages */}
-          <ChatLauncher />
-        </Router>
+            {/* ✅ Chat Launcher visible on all pages */}
+            <ChatLauncher />
+          </Router>
+        </TranslationProvider>
       </ChatProvider>
     </AuthProvider>
   );

@@ -35,7 +35,7 @@ const Navbar = () => {
     }
   };
 
-  // ✅ Includes Reports + Partners + Contact routes + NEW Pricing route
+  // ✅ Includes Reports + Partners + Contact routes + NEW Pricing route + Startup Visa
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/dashboard", label: "Dashboard", protected: true },
@@ -45,6 +45,7 @@ const Navbar = () => {
     { to: "/pricing", label: "Pricing" }, // ✅ Added Pricing link (Module 10)
     { to: "/about", label: "About" },
     { to: "/partners", label: "Partners" },
+    { to: "/startup-visa", label: "Startup Visa" }, // ✅ Added per Claude instruction
     { to: "/contact", label: "Contact" }, // ✅ Added for Module 30
   ];
 

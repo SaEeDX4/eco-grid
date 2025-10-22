@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react"; // ✅ added useState
 import { useNavigate } from "react-router-dom";
 import {
   DollarSign,
@@ -32,6 +32,7 @@ import { useSubscription } from "../hooks/useSubscription";
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+  const [showUpgradeBanner, setShowUpgradeBanner] = useState(true); // ✅ added
 
   // ✅ Added: check for token and redirect if not authenticated
   useEffect(() => {
@@ -122,17 +123,17 @@ const DashboardPage = () => {
         </div>
 
         {/* ✅ Show upgrade banner if on free plan */}
-        {subscription && subscription.planId === "free" && (
-          <div className="mb-6">
-            <UpgradeBanner
-              message="Upgrade to unlock AI optimization and unlimited devices"
-              onUpgrade={() => navigate("/pricing")}
-              onDismiss={() => {
-                /* handle dismiss */
-              }}
-            />
-          </div>
-        )}
+        {subscription &&
+          subscription.planId === "free" &&
+          showUpgradeBanner && (
+            <div className="mb-6">
+              <UpgradeBanner
+                message="Upgrade to unlock AI optimization and unlimited devices"
+                onUpgrade={() => navigate("/pricing")}
+                onDismiss={() => setShowUpgradeBanner(false)} // ✅ fixed dismiss
+              />
+            </div>
+          )}
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

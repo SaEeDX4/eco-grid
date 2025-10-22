@@ -1,34 +1,54 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { animateValue } from "../lib/animationUtils";
 
-export const useCountUp = (end, duration = 2000, start = 0) => {
+export const useCountUp = (end, start = 0, duration = 2000, options = {}) => {
+  const {
+    decimals = 0,
+    separator = ",",
+    suffix = "",
+    prefix = "",
+    startOnMount = false,
+    enabled = true,
+  } = options;
+
   const [count, setCount] = useState(start);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const hasAnimated = useRef(false);
+
+  const formatNumber = (num) => {
+    const fixed = num.toFixed(decimals);
+    const parts = fixed.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+    return prefix + parts.join(".") + suffix;
+  };
+
+  const startAnimation = () => {
+    if (hasAnimated.current || !enabled) return;
+
+    hasAnimated.current = true;
+    setIsAnimating(true);
+
+    animateValue(start, end, duration, (value) => {
+      setCount(value);
+    });
+
+    setTimeout(() => setIsAnimating(false), duration);
+  };
 
   useEffect(() => {
-    let startTime;
-    let animationFrame;
+    if (startOnMount && enabled) {
+      startAnimation();
+    }
+  }, [startOnMount, enabled]);
 
-    const animate = (currentTime) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-
-      // Easing function for smooth animation
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-
-      setCount(Math.floor(easeOutQuart * (end - start) + start));
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-    };
-  }, [end, duration, start]);
-
-  return count;
+  return {
+    value: formatNumber(count),
+    rawValue: count,
+    isAnimating,
+    start: startAnimation,
+    reset: () => {
+      hasAnimated.current = false;
+      setCount(start);
+    },
+  };
 };

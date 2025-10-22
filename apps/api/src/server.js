@@ -2,6 +2,7 @@
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import mongoose from "mongoose";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +28,11 @@ import chatRoutes from "./routes/chat.js";
 // ✅ Added new pricing & subscription routes (Claude instruction)
 import pricingRoutes from "./routes/pricing.js";
 import subscriptionRoutes from "./routes/subscriptions.js";
+
+// ✅ Added metrics and system routes + service (Claude instruction)
+import metricsRoutes from "./routes/metrics.js";
+import systemRoutes from "./routes/system.js";
+import { startMetricsCollection } from "./services/metricsService.js";
 
 import { connectDB } from "./config/db.js";
 
@@ -71,6 +77,14 @@ app.use(express.urlencoded({ extended: true }));
 // ✅ Connect to MongoDB
 connectDB();
 
+// ✅ Start background metrics after DB connection
+mongoose.connection.once("open", () => {
+  console.log("✅ MongoDB connected successfully");
+
+  // Start background metrics collection
+  startMetricsCollection();
+});
+
 // ✅ Health check
 app.get("/api/health", (req, res) => {
   res.json({
@@ -96,6 +110,10 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/pricing", pricingRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 
+// ✅ Metrics and System Routes (Claude instruction)
+app.use("/api/metrics", metricsRoutes);
+app.use("/api/system", systemRoutes);
+
 // ✅ Root
 app.get("/api", (req, res) => {
   res.json({
@@ -115,6 +133,8 @@ app.get("/api", (req, res) => {
       chat: "/api/chat",
       pricing: "/api/pricing",
       subscriptions: "/api/subscriptions",
+      metrics: "/api/metrics",
+      system: "/api/system",
       forecast: "/api/forecast (coming soon)",
     },
   });
