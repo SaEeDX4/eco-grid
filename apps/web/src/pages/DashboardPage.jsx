@@ -25,6 +25,11 @@ import Button from "../components/ui/Button";
 import { Skeleton } from "../components/ui/Skeleton";
 import { mockDashboardData } from "../lib/mockData"; // ✅ added
 
+// ✅ Added for Module 10 (Feature Gating)
+import FeatureGate from "../components/pricing/FeatureGate";
+import UpgradeBanner from "../components/pricing/UpgradeBanner";
+import { useSubscription } from "../hooks/useSubscription";
+
 const DashboardPage = () => {
   const navigate = useNavigate();
 
@@ -39,6 +44,7 @@ const DashboardPage = () => {
   const { data, loading, refresh } = useDashboardData();
   const realtimeData = useRealTimeData(5000);
   const { success } = useToast();
+  const { subscription, isFeatureAvailable } = useSubscription(); // ✅ Added subscription hook
 
   const handleExport = () => {
     success("Exporting dashboard data...");
@@ -115,6 +121,19 @@ const DashboardPage = () => {
           </div>
         </div>
 
+        {/* ✅ Show upgrade banner if on free plan */}
+        {subscription && subscription.planId === "free" && (
+          <div className="mb-6">
+            <UpgradeBanner
+              message="Upgrade to unlock AI optimization and unlimited devices"
+              onUpgrade={() => navigate("/pricing")}
+              onDismiss={() => {
+                /* handle dismiss */
+              }}
+            />
+          </div>
+        )}
+
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <KPICard
@@ -177,12 +196,23 @@ const DashboardPage = () => {
             </div>
 
             <div className="animate-in fade-in slide-in-from-left duration-700 delay-200">
-              {/* ✅ Fixed line below */}
-              <TrendChart
-                data={
-                  data?.trends?.last7Days || mockDashboardData.trends.last7Days
-                }
-              />
+              {/* ✅ Example: Gate advanced reports feature */}
+              {!isFeatureAvailable("advancedReports") ? (
+                <FeatureGate
+                  featureName="Advanced Reports"
+                  requiredPlan="Household"
+                  onUpgrade={() => navigate("/pricing")}
+                >
+                  <div className="h-64 bg-slate-100 dark:bg-slate-800 rounded-2xl" />
+                </FeatureGate>
+              ) : (
+                <TrendChart
+                  data={
+                    data?.trends?.last7Days ||
+                    mockDashboardData.trends.last7Days
+                  }
+                />
+              )}
             </div>
 
             <div className="animate-in fade-in slide-in-from-left duration-700 delay-300">

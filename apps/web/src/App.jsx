@@ -23,6 +23,7 @@ import OptimizerPage from "./pages/OptimizerPage"; // ✅ Module 5
 import ReportsPage from "./pages/ReportsPage"; // ✅ Added for Module 6
 import PartnersPage from "./pages/PartnersPage"; // ✅ Added for Module 14
 import ContactPage from "./pages/ContactPage"; // ✅ Added for Module 9
+import PricingPage from "./pages/PricingPage"; // ✅ Added for Module 10
 
 function AppContent() {
   const { toasts, removeToast } = useToast();
@@ -92,6 +93,18 @@ function AppContent() {
             <>
               <Navbar />
               <ContactPage />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* ✅ Added Pricing Route */}
+        <Route
+          path="/pricing"
+          element={
+            <>
+              <Navbar />
+              <PricingPage />
               <Footer />
             </>
           }

@@ -35,13 +35,14 @@ const Navbar = () => {
     }
   };
 
-  // ✅ Includes Reports + Partners + Contact routes (per Modules 6, 15, 30)
+  // ✅ Includes Reports + Partners + Contact routes + NEW Pricing route
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/dashboard", label: "Dashboard", protected: true },
     { to: "/devices", label: "Devices", protected: true },
     { to: "/optimizer", label: "Optimizer", protected: true },
     { to: "/reports", label: "Reports", protected: true },
+    { to: "/pricing", label: "Pricing" }, // ✅ Added Pricing link (Module 10)
     { to: "/about", label: "About" },
     { to: "/partners", label: "Partners" },
     { to: "/contact", label: "Contact" }, // ✅ Added for Module 30

@@ -24,6 +24,10 @@ import partnersRoutes from "./routes/partners.js";
 import contactRoutes from "./routes/contact.js";
 import chatRoutes from "./routes/chat.js";
 
+// ✅ Added new pricing & subscription routes (Claude instruction)
+import pricingRoutes from "./routes/pricing.js";
+import subscriptionRoutes from "./routes/subscriptions.js";
+
 import { connectDB } from "./config/db.js";
 
 const app = express();
@@ -88,6 +92,10 @@ app.use("/api/partners", partnersRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/chat", chatRoutes);
 
+// ✅ Added new Pricing and Subscription routes (Claude instruction)
+app.use("/api/pricing", pricingRoutes);
+app.use("/api/subscriptions", subscriptionRoutes);
+
 // ✅ Root
 app.get("/api", (req, res) => {
   res.json({
@@ -105,6 +113,8 @@ app.get("/api", (req, res) => {
       partners: "/api/partners",
       contact: "/api/contact",
       chat: "/api/chat",
+      pricing: "/api/pricing",
+      subscriptions: "/api/subscriptions",
       forecast: "/api/forecast (coming soon)",
     },
   });
