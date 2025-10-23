@@ -1,5 +1,5 @@
 export const MAPBOX_TOKEN =
-  import.meta.env.VITE_MAPBOX_TOKEN || "pk.your_mapbox_token_here";
+  import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || "pk.your_mapbox_token_here";
 
 // BC-centered view
 export const BC_CENTER = {
