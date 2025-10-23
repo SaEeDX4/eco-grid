@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "build": "echo 'No build step required for API'"
+    "build": "echo 'No build step required for API'",
+    "seed:blog": "node src/scripts/seedBlogData.js",
+    "seed:testimonials": "node src/scripts/seedTestimonials.js",
+    "seed:pilots": "node src/scripts/seedPilots.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.67.0",
@@ -19,6 +22,10 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.1.1",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "unified": "^11.0.5",
     "zod": "^3.22.4"
   },
   "devDependencies": {

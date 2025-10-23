@@ -1,12 +1,20 @@
 // apps/api/src/services/claude.js
 import Anthropic from "@anthropic-ai/sdk";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// ✅ Ensure .env is loaded correctly even if server.js misses it
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 // 🧠 Singleton client to avoid re-creation
 let anthropicClient = null;
 
 /**
  * Lazily initializes the Anthropic client using the env key.
- * Guarantees that dotenv has already been loaded by server.js.
+ * Works even if dotenv wasn't loaded elsewhere.
  */
 function getAnthropicClient() {
   if (anthropicClient) return anthropicClient;

@@ -35,13 +35,16 @@ const Navbar = () => {
     }
   };
 
-  // ✅ Includes Reports + Partners + Contact routes + NEW Pricing route + Startup Visa
+  // ✅ Includes Reports + Partners + Contact routes + NEW Pricing route + Startup Visa + BLOG
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/dashboard", label: "Dashboard", protected: true },
     { to: "/devices", label: "Devices", protected: true },
     { to: "/optimizer", label: "Optimizer", protected: true },
     { to: "/reports", label: "Reports", protected: true },
+    { to: "/map", label: "Pilot Map" },
+    { to: "/testimonials", label: "Testimonials" },
+    { to: "/blog", label: "Blog" }, // ✅ Added Blog link (Claude instruction)
     { to: "/pricing", label: "Pricing" }, // ✅ Added Pricing link (Module 10)
     { to: "/about", label: "About" },
     { to: "/partners", label: "Partners" },

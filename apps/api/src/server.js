@@ -34,6 +34,18 @@ import metricsRoutes from "./routes/metrics.js";
 import systemRoutes from "./routes/system.js";
 import { startMetricsCollection } from "./services/metricsService.js";
 
+// ✅ Added Blog & Content Routes (Claude instruction)
+import articlesRoutes from "./routes/articles.js";
+import newsletterRoutes from "./routes/newsletter.js";
+import aiWriterRoutes from "./routes/aiWriter.js";
+
+// ✅ Added Testimonials & Case Studies Routes (Module 13)
+import testimonialsRoutes from "./routes/testimonials.js";
+import caseStudiesRoutes from "./routes/caseStudies.js";
+
+// ✅ Added Pilots Routes (Module 14)
+import pilotsRoutes from "./routes/pilots.js";
+
 import { connectDB } from "./config/db.js";
 
 const app = express();
@@ -114,6 +126,18 @@ app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/metrics", metricsRoutes);
 app.use("/api/system", systemRoutes);
 
+// ✅ Blog & Content Routes (Claude instruction)
+app.use("/api/articles", articlesRoutes);
+app.use("/api/newsletter", newsletterRoutes);
+app.use("/api/ai-writer", aiWriterRoutes);
+
+// ✅ Testimonials & Case Studies Routes (Module 13)
+app.use("/api/testimonials", testimonialsRoutes);
+app.use("/api/case-studies", caseStudiesRoutes);
+
+// ✅ Pilots Routes (Module 14)
+app.use("/api/pilots", pilotsRoutes);
+
 // ✅ Root
 app.get("/api", (req, res) => {
   res.json({
@@ -135,6 +159,12 @@ app.get("/api", (req, res) => {
       subscriptions: "/api/subscriptions",
       metrics: "/api/metrics",
       system: "/api/system",
+      articles: "/api/articles",
+      newsletter: "/api/newsletter",
+      "ai-writer": "/api/ai-writer",
+      testimonials: "/api/testimonials",
+      "case-studies": "/api/case-studies",
+      pilots: "/api/pilots",
       forecast: "/api/forecast (coming soon)",
     },
   });

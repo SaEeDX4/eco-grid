@@ -30,6 +30,18 @@ import PricingPage from "./pages/PricingPage"; // ✅ Added for Module 10
 import SUVPage from "./pages/SUVPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
+// ✅ Added Blog-related imports (Claude instruction)
+import BlogPage from "./pages/BlogPage";
+import ArticlePage from "./pages/ArticlePage";
+import AIWriterPage from "./pages/AIWriterPage";
+
+// ✅ Added Testimonials & Case Studies imports (Module 13)
+import TestimonialsPage from "./pages/TestimonialsPage";
+import CaseStudyPage from "./pages/CaseStudyPage";
+
+// ✅ Added Pilot Map import (Module 14)
+import PilotMapPage from "./pages/PilotMapPage";
+
 function AppContent() {
   const { toasts, removeToast } = useToast();
 
@@ -134,6 +146,75 @@ function AppContent() {
             <>
               <Navbar />
               <PrivacyPolicyPage />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* 📰 Blog Routes (Claude instruction) */}
+        <Route
+          path="/blog"
+          element={
+            <>
+              <Navbar />
+              <BlogPage />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/blog/:slug"
+          element={
+            <>
+              <Navbar />
+              <ArticlePage />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/ai-writer"
+          element={
+            <>
+              <Navbar />
+              <AIWriterPage />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* 💬 Testimonials Routes (Module 13) */}
+        <Route
+          path="/testimonials"
+          element={
+            <>
+              <Navbar />
+              <TestimonialsPage />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/case-studies/:slug"
+          element={
+            <>
+              <Navbar />
+              <CaseStudyPage />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* 🗺️ Pilot Map Route (Module 14) */}
+        <Route
+          path="/map"
+          element={
+            <>
+              <Navbar />
+              <PilotMapPage />
               <Footer />
             </>
           }
