@@ -20,7 +20,8 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "rollup": "^4.52.5"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.65.0",
