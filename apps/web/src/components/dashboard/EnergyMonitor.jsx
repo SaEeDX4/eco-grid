@@ -10,6 +10,9 @@ const EnergyMonitor = ({
 }) => {
   const percentage = (currentUsage / capacity) * 100;
 
+  // ✅ Round to one decimal without trailing zero (e.g., 3.2 → "3.2", 3.0 → "3")
+  const displayUsage = parseFloat(currentUsage.toFixed(1));
+
   const statusConfig = {
     normal: {
       color: "text-green-600 dark:text-green-400",
@@ -61,7 +64,6 @@ const EnergyMonitor = ({
           <div className="relative inline-block">
             {/* Animated Circle */}
             <svg className="w-48 h-48 transform -rotate-90">
-              {/* Background Circle */}
               <circle
                 cx="96"
                 cy="96"
@@ -71,7 +73,6 @@ const EnergyMonitor = ({
                 fill="none"
                 className="text-slate-200 dark:text-slate-700"
               />
-              {/* Progress Circle */}
               <circle
                 cx="96"
                 cy="96"
@@ -101,7 +102,7 @@ const EnergyMonitor = ({
             {/* Center Content */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                {currentUsage}
+                {displayUsage}
               </div>
               <div className="text-lg text-slate-600 dark:text-slate-400 font-medium">
                 kW

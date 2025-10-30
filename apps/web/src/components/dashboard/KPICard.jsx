@@ -18,7 +18,14 @@ const KPICard = ({
   tooltip,
 }) => {
   const [ref, isVisible] = useScrollAnimation(0.3);
-  const animatedValue = useCountUp(isVisible && !loading ? value : 0, 1500);
+
+  // ✅ Extract formatted string correctly
+  const { value: animatedValue } = useCountUp(
+    isVisible && !loading ? value : 0,
+    0,
+    1500,
+    { startOnMount: true }
+  );
 
   const colors = {
     green: {
@@ -103,7 +110,7 @@ const KPICard = ({
           `}
           >
             {prefix}
-            {animatedValue.toLocaleString()}
+            {animatedValue}
             {unit}
           </div>
         </div>

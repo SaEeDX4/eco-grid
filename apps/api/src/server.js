@@ -63,8 +63,9 @@ app.use(helmet());
 
 // ✅ CORS — allow your local + Render frontend
 const allowedOrigins = [
-  "http://localhost:5173", // local dev
-  "https://eco-grid.onrender.com", // Render static frontend
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://eco-grid.onrender.com",
 ];
 
 app.use(

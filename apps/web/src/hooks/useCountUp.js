@@ -23,7 +23,7 @@ export const useCountUp = (end, start = 0, duration = 2000, options = {}) => {
   };
 
   const startAnimation = () => {
-    if (hasAnimated.current || !enabled) return;
+    if (!enabled) return;
 
     hasAnimated.current = true;
     setIsAnimating(true);
@@ -35,11 +35,20 @@ export const useCountUp = (end, start = 0, duration = 2000, options = {}) => {
     setTimeout(() => setIsAnimating(false), duration);
   };
 
+  // ✅ Start animation once when mounted
   useEffect(() => {
     if (startOnMount && enabled) {
       startAnimation();
     }
   }, [startOnMount, enabled]);
+
+  // ✅ Re-run animation whenever `end` changes (after reload or API update)
+  useEffect(() => {
+    if (enabled && end !== undefined && !isAnimating) {
+      hasAnimated.current = false; // allow re-animation
+      startAnimation();
+    }
+  }, [end]);
 
   return {
     value: formatNumber(count),

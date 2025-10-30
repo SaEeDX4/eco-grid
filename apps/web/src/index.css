@@ -354,3 +354,23 @@ body.modal-open {
   position: relative; /* Keeps layout stable */
   height: 100%;
 }
+/* ✅ Fix Mapbox control visibility and click issues */
+.mapboxgl-control-container,
+.mapboxgl-ctrl,
+.mapboxgl-ctrl-top-right {
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+/* Keep controls clickable and above UI */
+.mapboxgl-ctrl-top-right {
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+/* 👇 Move the zoom controls down automatically on lg (≤1024px) */
+@media (max-width: 1024px) {
+  .mapboxgl-ctrl-top-right {
+    top: 5rem !important; /* ~80px, adjust as needed */
+    right: 0.02rem !important; /* optional spacing */
+  }
+}

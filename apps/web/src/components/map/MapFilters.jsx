@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Filter, X, ChevronDown } from "lucide-react";
+import {
+  Filter,
+  X,
+  ChevronDown,
+  SunMedium,
+  PlugZap,
+  BatteryFull,
+  Flame,
+  Thermometer,
+} from "lucide-react";
 
 const MapFilters = ({ activeFilters, onFilterChange }) => {
   const [showFilters, setShowFilters] = useState(false);
@@ -14,11 +23,15 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
   ];
 
   const deviceTypes = [
-    { id: "solar", name: "Solar Panels", icon: "☀️" },
-    { id: "ev-charger", name: "EV Chargers", icon: "🔌" },
-    { id: "battery", name: "Battery Storage", icon: "🔋" },
-    { id: "heat-pump", name: "Heat Pumps", icon: "♨️" },
-    { id: "thermostat", name: "Smart Thermostats", icon: "🌡️" },
+    { id: "solar", name: "Solar Panels", icon: <SunMedium size={16} /> }, // FIX
+    { id: "ev-charger", name: "EV Chargers", icon: <PlugZap size={16} /> }, // FIX
+    { id: "battery", name: "Battery Storage", icon: <BatteryFull size={16} /> }, // FIX
+    { id: "heat-pump", name: "Heat Pumps", icon: <Flame size={16} /> }, // FIX
+    {
+      id: "thermostat",
+      name: "Smart Thermostats",
+      icon: <Thermometer size={16} />,
+    }, // FIX
   ];
 
   const statuses = [
@@ -32,7 +45,6 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
     const updated = current.includes(regionId)
       ? current.filter((r) => r !== regionId)
       : [...current, regionId];
-
     onFilterChange({ ...activeFilters, region: updated });
   };
 
@@ -41,7 +53,6 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
     const updated = current.includes(deviceId)
       ? current.filter((d) => d !== deviceId)
       : [...current, deviceId];
-
     onFilterChange({ ...activeFilters, deviceType: updated });
   };
 
@@ -50,7 +61,6 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
     const updated = current.includes(statusId)
       ? current.filter((s) => s !== statusId)
       : [...current, statusId];
-
     onFilterChange({ ...activeFilters, status: updated });
   };
 
@@ -69,11 +79,18 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
     (activeFilters.status?.length || 0);
 
   return (
-    <div className="absolute top-4 left-4 z-10">
+    // FIX: make the container not catch pointer events by default, then re-enable on children
+    <div className="absolute top-4 max-lg:top-20 left-4 z-50 pointer-events-none">
       {/* Filter toggle button */}
       <motion.button
-        onClick={() => setShowFilters(!showFilters)}
-        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-2 border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-200"
+        onClick={(e) => {
+          e.preventDefault(); // FIX: block map click/drag
+          e.stopPropagation(); // FIX
+          setShowFilters((v) => !v);
+        }}
+        className={`pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-2 border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-200 ${
+          showFilters ? "ring-2 ring-blue-400" : ""
+        }`}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
@@ -88,7 +105,9 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
         )}
         <ChevronDown
           size={18}
-          className={`text-slate-600 dark:text-slate-400 transition-transform duration-200 ${showFilters ? "rotate-180" : ""}`}
+          className={`text-slate-600 dark:text-slate-400 transition-transform duration-200 ${
+            showFilters ? "rotate-180" : ""
+          }`}
         />
       </motion.button>
 
@@ -96,11 +115,14 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
       <AnimatePresence>
         {showFilters && (
           <motion.div
-            className="mt-3 p-6 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-2 border-slate-200 dark:border-slate-700 shadow-2xl w-[360px]"
+            className="pointer-events-auto mt-3 p-6 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-2 border-slate-200 dark:border-slate-700 shadow-2xl w-[360px]"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25 }}
+            onMouseDown={(e) => {
+              e.stopPropagation(); // FIX: keep interactions inside panel
+            }}
           >
             {/* Header with clear button */}
             {hasActiveFilters && (
@@ -109,7 +131,11 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
                   {filterCount} filter{filterCount !== 1 ? "s" : ""} active
                 </span>
                 <button
-                  onClick={clearFilters}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    clearFilters();
+                  }}
                   className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
                 >
                   <X size={16} />
@@ -126,19 +152,19 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
               <div className="space-y-2">
                 {regions.map((region) => {
                   const isActive = activeFilters.region?.includes(region.id);
-
                   return (
                     <motion.button
                       key={region.id}
-                      onClick={() => handleRegionToggle(region.id)}
-                      className={`
-                        w-full px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200
-                        ${
-                          isActive
-                            ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                        }
-                      `}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleRegionToggle(region.id);
+                      }}
+                      className={`w-full px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 ${
+                        isActive
+                          ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                      }`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -159,23 +185,23 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
                   const isActive = activeFilters.deviceType?.includes(
                     device.id
                   );
-
                   return (
                     <motion.button
                       key={device.id}
-                      onClick={() => handleDeviceToggle(device.id)}
-                      className={`
-                        w-full px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center gap-2
-                        ${
-                          isActive
-                            ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                        }
-                      `}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeviceToggle(device.id);
+                      }}
+                      className={`w-full px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
+                        isActive
+                          ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                      }`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      <span>{device.icon}</span>
+                      {device.icon}
                       {device.name}
                     </motion.button>
                   );
@@ -191,19 +217,19 @@ const MapFilters = ({ activeFilters, onFilterChange }) => {
               <div className="space-y-2">
                 {statuses.map((status) => {
                   const isActive = activeFilters.status?.includes(status.id);
-
                   return (
                     <motion.button
                       key={status.id}
-                      onClick={() => handleStatusToggle(status.id)}
-                      className={`
-                        w-full px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center gap-2
-                        ${
-                          isActive
-                            ? "bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
-                        }
-                      `}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleStatusToggle(status.id);
+                      }}
+                      className={`w-full px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 flex items-center gap-2 ${
+                        isActive
+                          ? "bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                      }`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >

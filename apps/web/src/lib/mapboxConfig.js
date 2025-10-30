@@ -1,11 +1,11 @@
 export const MAPBOX_TOKEN =
-  import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || "pk.your_mapbox_token_here";
+  import.meta.env.VITE_MAPBOX_TOKEN || "pk.your_mapbox_token_here";
 
 // BC-centered view
 export const BC_CENTER = {
-  longitude: -123.3656,
-  latitude: 49.2827, // Vancouver
-  zoom: 7,
+  longitude: -122.9738, // Burnaby center
+  latitude: 49.2488, // Burnaby City Hall area
+  zoom: 10.5, // balanced zoom for city-level view
 };
 
 // Map style URLs

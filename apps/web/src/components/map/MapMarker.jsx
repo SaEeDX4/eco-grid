@@ -1,19 +1,39 @@
-import React, { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { getStatusColor } from "../../lib/mapHelpers";
+// FIX: Professional Lucide icons
+import { SunMedium, PlugZap, BatteryFull, Flame, Zap } from "lucide-react";
 
-const MapMarker = ({ pilot, onClick, onHover, isHovered }) => {
+const MapMarker = ({
+  pilot,
+  onClick,
+  onHover,
+  isHovered,
+  renderInline = false,
+}) => {
   const markerRef = useRef(null);
 
   const statusColor = getStatusColor(pilot.status);
-  const pulseIntensity = pilot.metrics.energySaved / 100000; // Scale pulse based on energy
+  const pulseIntensity = pilot.metrics.energySaved / 100000;
 
-  return createPortal(
+  // Choose elegant icons based on type
+  const renderIcon = () => {
+    if (pilot.deviceTypes.includes("solar")) return <SunMedium size={20} />;
+    if (pilot.deviceTypes.includes("ev-charger")) return <PlugZap size={20} />;
+    if (pilot.deviceTypes.includes("battery")) return <BatteryFull size={20} />;
+    if (pilot.deviceTypes.includes("heat-pump")) return <Flame size={20} />;
+    return <Zap size={20} />;
+  };
+
+  return (
     <motion.div
       ref={markerRef}
       className="relative cursor-pointer"
-      onClick={() => onClick(pilot)}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClick(pilot);
+      }}
       onMouseEnter={() => onHover(pilot)}
       onMouseLeave={() => onHover(null)}
       initial={{ scale: 0, opacity: 0 }}
@@ -27,7 +47,7 @@ const MapMarker = ({ pilot, onClick, onHover, isHovered }) => {
         damping: 20,
       }}
     >
-      {/* Pulse rings for active pilots */}
+      {/* Pulse animation */}
       {pilot.status === "active" && (
         <>
           <motion.div
@@ -68,7 +88,7 @@ const MapMarker = ({ pilot, onClick, onHover, isHovered }) => {
 
       {/* Main marker */}
       <div
-        className="relative w-10 h-10 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-slate-900"
+        className="relative w-10 h-10 rounded-full flex items-center justify-center shadow-lg border-4 border-white dark:border-slate-900 text-white"
         style={{
           backgroundColor: statusColor,
           boxShadow: isHovered
@@ -76,21 +96,10 @@ const MapMarker = ({ pilot, onClick, onHover, isHovered }) => {
             : `0 0 15px ${statusColor}`,
         }}
       >
-        {/* Icon based on primary device type */}
-        <span className="text-white text-lg">
-          {pilot.deviceTypes.includes("solar")
-            ? "☀️"
-            : pilot.deviceTypes.includes("ev-charger")
-              ? "🔌"
-              : pilot.deviceTypes.includes("battery")
-                ? "🔋"
-                : pilot.deviceTypes.includes("heat-pump")
-                  ? "♨️"
-                  : "⚡"}
-        </span>
+        {renderIcon()}
       </div>
 
-      {/* Status indicator dot */}
+      {/* Status indicator */}
       <div
         className="absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900"
         style={{ backgroundColor: statusColor }}
@@ -102,8 +111,7 @@ const MapMarker = ({ pilot, onClick, onHover, isHovered }) => {
           <span className="text-white text-xs">★</span>
         </div>
       )}
-    </motion.div>,
-    document.body
+    </motion.div>
   );
 };
 

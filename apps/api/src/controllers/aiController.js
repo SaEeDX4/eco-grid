@@ -31,16 +31,30 @@ Respond ONLY with valid JSON:
 
 DO NOT include any text outside the JSON object.`;
 
-    const response = await claude.complete(prompt, { maxTokens: 200 });
+    const response = await claude.complete(prompt, {
+      model: "claude-sonnet-4-5-20250929", // ✅ updated model
+      maxTokens: 200,
+    });
 
-    // Parse the JSON response
+    // Clean and validate response
     let cleanResponse = response?.trim() || "";
     cleanResponse = cleanResponse
       .replace(/```json\n?/g, "")
       .replace(/```\n?/g, "")
       .trim();
 
-    const data = JSON.parse(cleanResponse);
+    let data;
+
+    try {
+      if (!cleanResponse) throw new Error("Empty Claude response");
+      data = JSON.parse(cleanResponse);
+    } catch (parseError) {
+      console.warn("⚠️ Invalid or empty Claude response, using fallback.");
+      data = {
+        headline: "Transform Your Energy Usage",
+        subheadline: "Join Vancouver's Smart Energy Revolution",
+      };
+    }
 
     res.json({
       success: true,

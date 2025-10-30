@@ -53,7 +53,8 @@ class ClaudeAdapter {
 
     try {
       const response = await this.client.messages.create({
-        model: options.model || "claude-3-5-sonnet-20240620",
+        // ✅ Stable public model that works for all keys
+        model: options.model || "claude-sonnet-4-5-20250929",
         max_tokens: options.maxTokens || 1000,
         messages: [{ role: "user", content: prompt }],
       });
@@ -75,7 +76,8 @@ class ClaudeAdapter {
 
     try {
       const response = await this.client.messages.create({
-        model: options.model || "claude-3-5-sonnet-20240620",
+        // ✅ Stable public model that works for all keys
+        model: options.model || "claude-sonnet-4-5-20250929",
         max_tokens: options.maxTokens || 1000,
         messages,
       });

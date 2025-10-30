@@ -2,11 +2,21 @@ import ImpactMetric from "../models/ImpactMetric.js";
 
 export const getImpactMetrics = async (req, res) => {
   try {
-    // Get latest all-time metrics
-    let metrics = await ImpactMetric.getLatest();
+    let metrics = null;
 
-    // If no metrics exist, create initial ones
+    try {
+      metrics = await ImpactMetric.getLatest();
+    } catch (innerErr) {
+      console.warn("⚠️ ImpactMetric.getLatest() failed:", innerErr.message);
+    }
+
+    if (metrics && typeof metrics.toObject === "function") {
+      metrics = metrics.toObject();
+    }
+
+    // ✅ Ensure valid fallback if metrics is null or empty
     if (!metrics) {
+      console.log("⚠️ No metrics found — creating initial record...");
       metrics = await ImpactMetric.create({
         energySavedKWh: 127543,
         moneySavedCAD: 38263,
@@ -17,28 +27,34 @@ export const getImpactMetrics = async (req, res) => {
         waterSavedLiters: 15234,
         peakDemandReductionKW: 487,
         aggregationType: "all-time",
+        timestamp: new Date(),
       });
     }
 
-    res.json({
+    // ✅ Extra safeguard: ensure numeric values
+    const safeMetrics = {
+      energySavedKWh: Number(metrics.energySavedKWh) || 0,
+      moneySavedCAD: Number(metrics.moneySavedCAD) || 0,
+      co2ReducedKg: Number(metrics.co2ReducedKg) || 0,
+      activeHomes: Number(metrics.activeHomes) || 0,
+      activeBusinesses: Number(metrics.activeBusinesses) || 0,
+      devicesManaged: Number(metrics.devicesManaged) || 0,
+      waterSavedLiters: Number(metrics.waterSavedLiters) || 0,
+      peakDemandReductionKW: Number(metrics.peakDemandReductionKW) || 0,
+      lastUpdated: metrics.timestamp || new Date(),
+    };
+
+    res.status(200).json({
       success: true,
-      metrics: {
-        energySavedKWh: metrics.energySavedKWh,
-        moneySavedCAD: metrics.moneySavedCAD,
-        co2ReducedKg: metrics.co2ReducedKg,
-        activeHomes: metrics.activeHomes,
-        activeBusinesses: metrics.activeBusinesses,
-        devicesManaged: metrics.devicesManaged,
-        waterSavedLiters: metrics.waterSavedLiters,
-        peakDemandReductionKW: metrics.peakDemandReductionKW,
-        lastUpdated: metrics.timestamp,
-      },
+      metrics: safeMetrics,
     });
   } catch (error) {
-    console.error("Get impact metrics error:", error);
-    res.status(500).json({
+    console.error("❌ Get impact metrics error:", error);
+    // ✅ Always respond with JSON so frontend never breaks
+    return res.status(500).json({
       success: false,
       message: "Failed to fetch impact metrics",
+      error: error.message,
     });
   }
 };
@@ -55,7 +71,7 @@ export const getHistoricalMetrics = async (req, res) => {
 
     res.json({
       success: true,
-      metrics: metrics.reverse(), // Chronological order
+      metrics: metrics.reverse(),
       period,
       count: metrics.length,
     });
@@ -70,7 +86,6 @@ export const getHistoricalMetrics = async (req, res) => {
 
 export const updateMetrics = async (req, res) => {
   try {
-    // Admin only
     if (!req.user || req.user.role !== "admin") {
       return res.status(403).json({
         success: false,
@@ -78,7 +93,6 @@ export const updateMetrics = async (req, res) => {
       });
     }
 
-    // Calculate and store new metrics
     const newMetric = await ImpactMetric.calculateAndStore();
 
     res.json({
@@ -106,7 +120,6 @@ export const getMilestoneProgress = async (req, res) => {
       });
     }
 
-    // Define milestone targets
     const milestones = {
       households: {
         current: latest.activeHomes,
@@ -114,7 +127,7 @@ export const getMilestoneProgress = async (req, res) => {
         targetDate: "2027",
       },
       co2Saved: {
-        current: Math.round(latest.co2ReducedKg / 1000), // Convert to tonnes
+        current: Math.round(latest.co2ReducedKg / 1000),
         target: 500,
         targetDate: "2027",
       },
@@ -124,7 +137,7 @@ export const getMilestoneProgress = async (req, res) => {
         targetDate: "2030",
       },
       energySaved: {
-        current: Math.round(latest.energySavedKWh / 1000000), // Convert to MWh
+        current: Math.round(latest.energySavedKWh / 1000000),
         target: 10,
         targetDate: "2027",
       },

@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Info, ChevronUp } from "lucide-react";
+import {
+  Info,
+  ChevronUp,
+  SunMedium,
+  PlugZap,
+  BatteryFull,
+  Flame,
+  Thermometer,
+} from "lucide-react"; // FIX: Added Lucide icons
 
 const MapLegend = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -16,12 +24,13 @@ const MapLegend = () => {
     { color: "#6b7280", label: "Offline", description: "Not operational" },
   ];
 
+  // FIX: Replaced emojis with Lucide icons
   const markerInfo = [
-    { icon: "☀️", label: "Solar panels" },
-    { icon: "🔌", label: "EV chargers" },
-    { icon: "🔋", label: "Battery storage" },
-    { icon: "♨️", label: "Heat pumps" },
-    { icon: "🌡️", label: "Smart thermostats" },
+    { icon: <SunMedium size={16} />, label: "Solar panels" },
+    { icon: <PlugZap size={16} />, label: "EV chargers" },
+    { icon: <BatteryFull size={16} />, label: "Battery storage" },
+    { icon: <Flame size={16} />, label: "Heat pumps" },
+    { icon: <Thermometer size={16} />, label: "Smart thermostats" },
   ];
 
   return (
@@ -45,7 +54,9 @@ const MapLegend = () => {
           </div>
           <ChevronUp
             size={20}
-            className={`text-slate-600 dark:text-slate-400 transition-transform duration-200 ${isExpanded ? "" : "rotate-180"}`}
+            className={`text-slate-600 dark:text-slate-400 transition-transform duration-200 ${
+              isExpanded ? "" : "rotate-180"
+            }`}
           />
         </button>
 
@@ -95,7 +106,9 @@ const MapLegend = () => {
                       key={index}
                       className="flex items-center gap-2 text-sm"
                     >
-                      <span className="text-lg">{item.icon}</span>
+                      <span className="text-slate-700 dark:text-slate-300">
+                        {item.icon}
+                      </span>
                       <span className="text-slate-700 dark:text-slate-300">
                         {item.label}
                       </span>

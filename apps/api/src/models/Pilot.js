@@ -22,31 +22,46 @@ const pilotSchema = new mongoose.Schema(
         "Kootenays",
       ],
     },
+
+    // ✅ FIXED: use GeoJSON format compatible with 2dsphere index
     coordinates: {
-      latitude: {
-        type: Number,
-        required: true,
-        min: -90,
-        max: 90,
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
       },
-      longitude: {
-        type: Number,
+      coordinates: {
+        type: [Number], // [longitude, latitude]
         required: true,
-        min: -180,
-        max: 180,
+        validate: {
+          validator: function (arr) {
+            return (
+              Array.isArray(arr) &&
+              arr.length === 2 &&
+              arr[0] >= -180 &&
+              arr[0] <= 180 &&
+              arr[1] >= -90 &&
+              arr[1] <= 90
+            );
+          },
+          message: "Coordinates must be [longitude, latitude]",
+        },
       },
     },
+
     deviceTypes: [
       {
         type: String,
         enum: ["solar", "ev-charger", "battery", "heat-pump", "thermostat"],
       },
     ],
+
     status: {
       type: String,
       enum: ["active", "idle", "maintenance", "offline"],
       default: "active",
     },
+
     metrics: {
       energySaved: {
         type: Number,
@@ -80,11 +95,13 @@ const pilotSchema = new mongoose.Schema(
         max: 100,
       },
     },
+
     contactInfo: {
       email: String,
       phone: String,
       manager: String,
     },
+
     startDate: {
       type: Date,
       default: Date.now,
@@ -104,17 +121,12 @@ const pilotSchema = new mongoose.Schema(
   }
 );
 
-// Geospatial index for location queries
-pilotSchema.index({ "coordinates.latitude": 1, "coordinates.longitude": 1 });
+// ✅ Indexes (keep all previous ones)
 pilotSchema.index({ region: 1, status: 1 });
 pilotSchema.index({ status: 1 });
+pilotSchema.index({ coordinates: "2dsphere" }); // now valid with GeoJSON
 
-// Create 2dsphere index for geospatial queries
-pilotSchema.index({
-  coordinates: "2dsphere",
-});
-
-// Static method to find nearby pilots
+// ✅ Static method to find nearby pilots
 pilotSchema.statics.findNearby = function (
   longitude,
   latitude,
@@ -134,7 +146,7 @@ pilotSchema.statics.findNearby = function (
   });
 };
 
-// Static method to get aggregate metrics
+// ✅ Static method to get aggregate metrics
 pilotSchema.statics.getAggregateMetrics = async function (filters = {}) {
   const match = { status: { $ne: "offline" }, ...filters };
 
@@ -165,7 +177,7 @@ pilotSchema.statics.getAggregateMetrics = async function (filters = {}) {
   );
 };
 
-// Instance method to update last active
+// ✅ Instance method to update last active
 pilotSchema.methods.updateLastActive = async function () {
   this.lastActive = new Date();
   await this.save();

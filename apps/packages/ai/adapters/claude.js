@@ -8,7 +8,7 @@ const client = new Anthropic({
 export async function generate(prompt, options = {}) {
   try {
     const response = await client.messages.create({
-      model: options.model || "claude-3-5-sonnet-20241022",
+      model: options.model || "claude-sonnet-4-5-20250929",
       max_tokens: options.max_tokens || 500,
       temperature: options.temperature || 0.7,
       messages: [{ role: "user", content: prompt }],

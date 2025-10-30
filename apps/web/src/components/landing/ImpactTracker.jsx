@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { DollarSign, Leaf, Car, Home, Droplets, Battery } from "lucide-react";
 import { Card } from "../ui/Card";
 import { useCountUp } from "../../hooks/useCountUp";
@@ -13,7 +13,11 @@ const ImpactCard = ({
   delay = 0,
 }) => {
   const [ref, isVisible] = useScrollAnimation(0.3);
-  const animatedValue = useCountUp(isVisible ? value : 0, 2000);
+
+  // ✅ FIX: properly extract `value` from useCountUp hook result
+  const { value: animatedValue } = useCountUp(isVisible ? value : 0, 0, 2000, {
+    startOnMount: true,
+  });
 
   return (
     <div
@@ -27,7 +31,7 @@ const ImpactCard = ({
         </div>
         <div className="text-4xl font-bold text-slate-900 dark:text-white mb-2">
           {prefix}
-          {animatedValue.toLocaleString()}
+          {animatedValue}
           {suffix}
         </div>
         <div className="text-slate-600 dark:text-slate-400 font-medium">
@@ -40,27 +44,72 @@ const ImpactCard = ({
 
 const ImpactTracker = () => {
   const [ref] = useScrollAnimation(0.2);
+  const [liveData, setLiveData] = useState(null);
 
-  // Mock real-time data — in production, feed these from API
+  // ✅ Try loading from backend (safe + fallback)
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        // ✅ FIX: use full backend URL so it connects to port 5000
+        const res = await fetch("http://localhost:5000/api/metrics/impact");
+        const json = await res.json();
+        if (json.success && json.metrics) {
+          setLiveData(json.metrics);
+        }
+      } catch (err) {
+        console.warn("⚠️ Using fallback impact data (API not available)", err);
+      }
+    };
+    fetchMetrics();
+  }, []);
+
+  // ✅ Fallback or real data
   const impacts = [
     {
       icon: DollarSign,
-      value: 2847650,
+      value: liveData?.moneySavedCAD ?? 2847650,
       label: "Saved (CAD)",
       prefix: "$",
       delay: 0,
     },
-    { icon: Leaf, value: 1254, label: "CO₂ Reduced (tons)", delay: 100 },
-    { icon: Car, value: 5420, label: "EV Kilometers", suffix: "k", delay: 200 },
-    { icon: Home, value: 2150, label: "Homes Powered", delay: 300 },
+    {
+      icon: Leaf,
+      value: liveData?.co2ReducedKg
+        ? Math.round(liveData.co2ReducedKg / 1000)
+        : 1254,
+      label: "CO₂ Reduced (tons)",
+      delay: 100,
+    },
+    {
+      icon: Car,
+      value: liveData?.energySavedKWh
+        ? Math.round(liveData.energySavedKWh / 1000)
+        : 5420,
+      label: "EV Kilometers",
+      suffix: "k",
+      delay: 200,
+    },
+    {
+      icon: Home,
+      value: liveData?.activeHomes ?? 2150,
+      label: "Homes Powered",
+      delay: 300,
+    },
     {
       icon: Droplets,
-      value: 847,
+      value: liveData?.waterSavedLiters
+        ? Math.round(liveData.waterSavedLiters / 1000)
+        : 847,
       label: "Water Saved (liters)",
       suffix: "k",
       delay: 400,
     },
-    { icon: Battery, value: 1680, label: "Battery Cycles", delay: 500 },
+    {
+      icon: Battery,
+      value: liveData?.devicesManaged ?? 1680,
+      label: "Battery Cycles",
+      delay: 500,
+    },
   ];
 
   return (
@@ -87,7 +136,7 @@ const ImpactTracker = () => {
           ))}
         </div>
 
-        {/* Additional Stats Bar */}
+        {/* ✅ Additional Stats Bar */}
         <div className="mt-16 p-8 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-2xl border border-green-200 dark:border-green-800 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-600">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
