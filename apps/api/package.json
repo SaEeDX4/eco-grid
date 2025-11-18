@@ -9,7 +9,9 @@
     "build": "echo 'No build step required for API'",
     "seed:blog": "node src/scripts/seedBlogData.js",
     "seed:testimonials": "node src/scripts/seedTestimonials.js",
-    "seed:pilots": "node src/scripts/seedPilots.js"
+    "seed:pilots": "node src/scripts/seedPilots.js",
+    "seed:faqs": "node src/scripts/seedFAQs.js",
+    "seed:roadmap": "node src/scripts/seedRoadmap.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

@@ -42,6 +42,12 @@ import CaseStudyPage from "./pages/CaseStudyPage";
 // ✅ Added Pilot Map import (Module 14)
 import PilotMapPage from "./pages/PilotMapPage";
 
+// ✅ Added FAQ Page import (Module 15)
+import FAQPage from "./pages/FAQPage";
+
+// ⭐ NEW Roadmap Page import (Module 16)
+import RoadmapPage from "./pages/RoadmapPage";
+
 function AppContent() {
   const { toasts, removeToast } = useToast();
 
@@ -151,7 +157,7 @@ function AppContent() {
           }
         />
 
-        {/* 📰 Blog Routes (Claude instruction) */}
+        {/* 📰 Blog Routes */}
         <Route
           path="/blog"
           element={
@@ -185,7 +191,7 @@ function AppContent() {
           }
         />
 
-        {/* 💬 Testimonials Routes (Module 13) */}
+        {/* 💬 Testimonials Routes */}
         <Route
           path="/testimonials"
           element={
@@ -208,13 +214,37 @@ function AppContent() {
           }
         />
 
-        {/* 🗺️ Pilot Map Route (Module 14) */}
+        {/* 🗺️ Pilot Map Route */}
         <Route
           path="/map"
           element={
             <>
               <Navbar />
               <PilotMapPage />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* ⭐️ NEW: FAQ Route (Module 15) */}
+        <Route
+          path="/faq"
+          element={
+            <>
+              <Navbar />
+              <FAQPage />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* ⭐️ NEW: Roadmap Route (Module 16) */}
+        <Route
+          path="/roadmap"
+          element={
+            <>
+              <Navbar />
+              <RoadmapPage />
               <Footer />
             </>
           }

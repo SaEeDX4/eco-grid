@@ -25,6 +25,10 @@ import partnersRoutes from "./routes/partners.js";
 import contactRoutes from "./routes/contact.js";
 import chatRoutes from "./routes/chat.js";
 
+// ⭐ ADDED FOR MOD 15 FAQ
+import faqRoutes from "./routes/faq.js"; // ⭐ ADDED
+import faqAdminRoutes from "./routes/faqAdmin.js"; // ⭐ ADDED
+
 // ✅ Added new pricing & subscription routes (Claude instruction)
 import pricingRoutes from "./routes/pricing.js";
 import subscriptionRoutes from "./routes/subscriptions.js";
@@ -45,6 +49,9 @@ import caseStudiesRoutes from "./routes/caseStudies.js";
 
 // ✅ Added Pilots Routes (Module 14)
 import pilotsRoutes from "./routes/pilots.js";
+
+// ✅ ⭐ ADDED FOR MODULE 16 — Roadmap
+import roadmapRoutes from "./routes/roadmap.js"; // ⭐ EXACTLY AS CLAUDE SAID
 
 import { connectDB } from "./config/db.js";
 
@@ -71,7 +78,6 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow if no origin (like Postman) or in allowed list
       if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
@@ -119,6 +125,10 @@ app.use("/api/partners", partnersRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/chat", chatRoutes);
 
+// ⭐ ADDED FAQ ROUTES (Module 15)
+app.use("/api/faq", faqRoutes); // ⭐ ADDED
+app.use("/api/faq/admin", faqAdminRoutes); // ⭐ ADDED
+
 // ✅ Added new Pricing and Subscription routes (Claude instruction)
 app.use("/api/pricing", pricingRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
@@ -138,6 +148,9 @@ app.use("/api/case-studies", caseStudiesRoutes);
 
 // ✅ Pilots Routes (Module 14)
 app.use("/api/pilots", pilotsRoutes);
+
+// ⭐ ⭐ EXACTLY AS CLAUDE REQUIRED — ROADMAP ROUTES
+app.use("/api/roadmap", roadmapRoutes); // ⭐ DO NOT CHANGE
 
 // ✅ Root
 app.get("/api", (req, res) => {
@@ -166,6 +179,9 @@ app.get("/api", (req, res) => {
       testimonials: "/api/testimonials",
       "case-studies": "/api/case-studies",
       pilots: "/api/pilots",
+      roadmap: "/api/roadmap", // ⭐ ADDED FOR MODULE 16
+      faq: "/api/faq",
+      faqAdmin: "/api/faq/admin",
       forecast: "/api/forecast (coming soon)",
     },
   });

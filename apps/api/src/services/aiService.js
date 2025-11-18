@@ -23,6 +23,20 @@ function getClaude() {
   return claudeInstance;
 }
 
+/* ============================================
+   ✅ FIX: Required by faqSearchService.js
+   Minimal wrapper. Do not remove.
+============================================= */
+export const callClaude = async (prompt, options = {}) => {
+  const claude = getClaude();
+  if (!claude || !claude.client) {
+    console.warn("⚠️ Claude client not initialized in callClaude()");
+    throw new Error("Claude client unavailable");
+  }
+  return claude.complete(prompt, options);
+};
+/* ============================================ */
+
 export const getAIExplanation = async (schedule, mode, savings) => {
   const deviceCount = schedule?.length || 0;
   const offPeakDevices =
