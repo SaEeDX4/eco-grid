@@ -50,8 +50,14 @@ import caseStudiesRoutes from "./routes/caseStudies.js";
 // ✅ Added Pilots Routes (Module 14)
 import pilotsRoutes from "./routes/pilots.js";
 
-// ✅ ⭐ ADDED FOR MODULE 16 — Roadmap
+// ⭐ ⭐ EXACTLY AS CLAUDE REQUIRED — ROADMAP ROUTES
 import roadmapRoutes from "./routes/roadmap.js"; // ⭐ EXACTLY AS CLAUDE SAID
+
+// ⭐⭐⭐ ADDED — VPP (MODULE 17)
+import vppRoutes from "./routes/vpp.js"; // ⭐ DO NOT MODIFY
+
+// ⭐⭐⭐⭐ ADDED — HUB ROUTES (MODULE 18)
+import hubRoutes from "./routes/hub.js"; // ⭐ EXACTLY AS REQUESTED
 
 import { connectDB } from "./config/db.js";
 
@@ -113,7 +119,9 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// ✅ Routes
+// =============================
+// 📌 API ROUTES
+// =============================
 app.use("/api/ai", aiRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
@@ -142,17 +150,25 @@ app.use("/api/articles", articlesRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/ai-writer", aiWriterRoutes);
 
-// ✅ Testimonials & Case Studies Routes (Module 13)
+// ⭐ Testimonials & Case Studies Routes (Module 13)
 app.use("/api/testimonials", testimonialsRoutes);
 app.use("/api/case-studies", caseStudiesRoutes);
 
-// ✅ Pilots Routes (Module 14)
+// ⭐ Pilots Routes (Module 14)
 app.use("/api/pilots", pilotsRoutes);
 
-// ⭐ ⭐ EXACTLY AS CLAUDE REQUIRED — ROADMAP ROUTES
-app.use("/api/roadmap", roadmapRoutes); // ⭐ DO NOT CHANGE
+// ⭐⭐ Roadmap Routes (Module 16)
+app.use("/api/roadmap", roadmapRoutes);
 
-// ✅ Root
+// ⭐⭐⭐ VPP Routes (MODULE 17 — Virtual Power Plant)
+app.use("/api/vpp", vppRoutes); // ⭐ DO NOT CHANGE
+
+// ⭐⭐⭐⭐ HUB ROUTES (MODULE 18 — Ultra Critical)
+app.use("/api/hub", hubRoutes); // ⭐ EXACTLY AS CLAUDE INSTRUCTED
+
+// =============================
+// 📌 ROOT DOC
+// =============================
 app.get("/api", (req, res) => {
   res.json({
     message: "Welcome to Eco-Grid API",
@@ -179,15 +195,19 @@ app.get("/api", (req, res) => {
       testimonials: "/api/testimonials",
       "case-studies": "/api/case-studies",
       pilots: "/api/pilots",
-      roadmap: "/api/roadmap", // ⭐ ADDED FOR MODULE 16
+      roadmap: "/api/roadmap",
+      hub: "/api/hub", // ⭐ ADDED FOR MODULE 18
       faq: "/api/faq",
       faqAdmin: "/api/faq/admin",
+      vpp: "/api/vpp",
       forecast: "/api/forecast (coming soon)",
     },
   });
 });
 
-// ✅ 404
+// =============================
+// 📌 404 HANDLER
+// =============================
 app.use((req, res) => {
   res.status(404).json({
     error: "Not Found",
@@ -195,7 +215,9 @@ app.use((req, res) => {
   });
 });
 
-// ✅ Error handler
+// =============================
+// 📌 Global Error Handler
+// =============================
 app.use((err, req, res, next) => {
   console.error("Error:", err.message);
   res.status(err.status || 500).json({
@@ -204,13 +226,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ✅ Start server
+// =============================
+// 📌 Start server
+// =============================
 app.listen(PORT, () => {
   console.log(`✅ Eco-Grid API running on http://localhost:${PORT}`);
   console.log(`📚 API docs: http://localhost:${PORT}/api`);
   console.log(`💚 Health check: http://localhost:${PORT}/api/health`);
 
-  // ✅ Quick confirmation for Anthropic key (no exposure)
+  // 🔐 Claude API
   if (process.env.ANTHROPIC_API_KEY) {
     console.log("🤖 Claude API key detected successfully ✅");
   } else {

@@ -11,7 +11,14 @@
     "seed:testimonials": "node src/scripts/seedTestimonials.js",
     "seed:pilots": "node src/scripts/seedPilots.js",
     "seed:faqs": "node src/scripts/seedFAQs.js",
-    "seed:roadmap": "node src/scripts/seedRoadmap.js"
+    "seed:roadmap": "node src/scripts/seedRoadmap.js",
+    "seed:vpp:markets": "node src/scripts/seedVPPMarkets.js",
+    "seed:vpp:pools": "node src/scripts/seedVPPPools.js",
+    "seed:vpp": "npm run seed:vpp:markets && npm run seed:vpp:pools",
+    "seed:hub:hubs": "node src/scripts/seedHubs.js",
+    "seed:hub:tenants": "node src/scripts/seedTenants.js",
+    "seed:hub": "npm run seed:hub:hubs && npm run seed:hub:tenants",
+    "seed:all": "npm run seed:blog && npm run seed:testimonials && npm run seed:pilots && npm run seed:faqs && npm run seed:roadmap && npm run seed:vpp && npm run seed:hub"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

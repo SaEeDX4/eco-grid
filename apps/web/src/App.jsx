@@ -26,32 +26,47 @@ import PartnersPage from "./pages/PartnersPage"; // ✅ Added for Module 14
 import ContactPage from "./pages/ContactPage"; // ✅ Added for Module 9
 import PricingPage from "./pages/PricingPage"; // ✅ Added for Module 10
 
-// ✅ New imports from Claude instruction
+// ✅ From Claude
 import SUVPage from "./pages/SUVPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
-// ✅ Added Blog-related imports (Claude instruction)
+// Blog
 import BlogPage from "./pages/BlogPage";
 import ArticlePage from "./pages/ArticlePage";
 import AIWriterPage from "./pages/AIWriterPage";
 
-// ✅ Added Testimonials & Case Studies imports (Module 13)
+// Testimonials / Case Studies
 import TestimonialsPage from "./pages/TestimonialsPage";
 import CaseStudyPage from "./pages/CaseStudyPage";
 
-// ✅ Added Pilot Map import (Module 14)
+// Pilot Map
 import PilotMapPage from "./pages/PilotMapPage";
 
-// ✅ Added FAQ Page import (Module 15)
+// FAQ
 import FAQPage from "./pages/FAQPage";
 
-// ⭐ NEW Roadmap Page import (Module 16)
+// Roadmap
 import RoadmapPage from "./pages/RoadmapPage";
+
+// ⭐⭐⭐ VPP Pages
+import VPPOverviewPage from "./pages/VPPOverviewPage";
+import VPPPoolsPage from "./pages/VPPPoolsPage";
+import VPPPoolDetailPage from "./pages/VPPPoolDetailPage";
+import VPPRevenuePage from "./pages/VPPRevenuePage";
+
+// ⭐⭐⭐⭐ HUB PAGES (DO NOT DELETE)
+import HubList from "./pages/HubList";
+import HubOverview from "./pages/HubOverview";
+import HubPolicies from "./pages/HubPolicies";
+import HubAnalytics from "./pages/HubAnalytics";
+import HubRevenue from "./pages/HubRevenue";
+import TenantDetail from "./pages/TenantDetail";
+// ⭐⭐⭐⭐ END HUB PAGES
 
 function AppContent() {
   const { toasts, removeToast } = useToast();
 
-  // ✅ Restore token on startup
+  // Restore token
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) window.authToken = token;
@@ -85,7 +100,7 @@ function AppContent() {
           }
         />
 
-        {/* ✅ Added About Route */}
+        {/* Static marketing pages */}
         <Route
           path="/about"
           element={
@@ -97,7 +112,6 @@ function AppContent() {
           }
         />
 
-        {/* ✅ Added Partners Route */}
         <Route
           path="/partners"
           element={
@@ -109,7 +123,6 @@ function AppContent() {
           }
         />
 
-        {/* ✅ Added Contact Route */}
         <Route
           path="/contact"
           element={
@@ -121,7 +134,6 @@ function AppContent() {
           }
         />
 
-        {/* ✅ Added Pricing Route */}
         <Route
           path="/pricing"
           element={
@@ -133,7 +145,6 @@ function AppContent() {
           }
         />
 
-        {/* ✅ Added Startup Visa Route */}
         <Route
           path="/startup-visa"
           element={
@@ -145,7 +156,6 @@ function AppContent() {
           }
         />
 
-        {/* ✅ Added Privacy Policy Route */}
         <Route
           path="/privacy-policy"
           element={
@@ -157,7 +167,7 @@ function AppContent() {
           }
         />
 
-        {/* 📰 Blog Routes */}
+        {/* 📰 Blog */}
         <Route
           path="/blog"
           element={
@@ -191,7 +201,7 @@ function AppContent() {
           }
         />
 
-        {/* 💬 Testimonials Routes */}
+        {/* Testimonials / Case Studies */}
         <Route
           path="/testimonials"
           element={
@@ -214,7 +224,7 @@ function AppContent() {
           }
         />
 
-        {/* 🗺️ Pilot Map Route */}
+        {/* Map / FAQ / Roadmap */}
         <Route
           path="/map"
           element={
@@ -226,7 +236,6 @@ function AppContent() {
           }
         />
 
-        {/* ⭐️ NEW: FAQ Route (Module 15) */}
         <Route
           path="/faq"
           element={
@@ -238,7 +247,6 @@ function AppContent() {
           }
         />
 
-        {/* ⭐️ NEW: Roadmap Route (Module 16) */}
         <Route
           path="/roadmap"
           element={
@@ -250,16 +258,60 @@ function AppContent() {
           }
         />
 
-        {/* 🔐 Auth Routes */}
+        {/* ⭐⭐⭐ VPP ROUTES */}
+        <Route
+          path="/vpp"
+          element={
+            <>
+              <Navbar />
+              <VPPOverviewPage />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/vpp/pools"
+          element={
+            <>
+              <Navbar />
+              <VPPPoolsPage />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/vpp/pools/:id"
+          element={
+            <>
+              <Navbar />
+              <VPPPoolDetailPage />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/vpp/revenue"
+          element={
+            <>
+              <Navbar />
+              <VPPRevenuePage />
+              <Footer />
+            </>
+          }
+        />
+        {/* END VPP */}
+
+        {/* AUTH */}
         <Route path="/auth/login" element={<LoginPage />} />
         <Route path="/auth/signup" element={<SignupPage />} />
         <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
-
-        {/* ✅ Added direct Signup route */}
         <Route path="/signup" element={<SignupPage />} />
 
-        {/* 🔒 Protected Routes */}
+        {/* 🔒 PROTECTED ROUTES */}
         <Route
           path="/dashboard"
           element={
@@ -304,7 +356,75 @@ function AppContent() {
           }
         />
 
-        {/* 🚧 404 Fallback */}
+        {/* ⭐⭐⭐⭐ HUB ROUTES (SAFE COPY — NO REMOVALS) */}
+        <Route
+          path="/hub/list"
+          element={
+            <ProtectedRoute>
+              <Navbar />
+              <HubList />
+              <Footer />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hub/:hubId"
+          element={
+            <ProtectedRoute>
+              <Navbar />
+              <HubOverview />
+              <Footer />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hub/:hubId/policies"
+          element={
+            <ProtectedRoute>
+              <Navbar />
+              <HubPolicies />
+              <Footer />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hub/:hubId/analytics"
+          element={
+            <ProtectedRoute>
+              <Navbar />
+              <HubAnalytics />
+              <Footer />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hub/:hubId/revenue"
+          element={
+            <ProtectedRoute>
+              <Navbar />
+              <HubRevenue />
+              <Footer />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/hub/tenants/:tenantId"
+          element={
+            <ProtectedRoute>
+              <Navbar />
+              <TenantDetail />
+              <Footer />
+            </ProtectedRoute>
+          }
+        />
+        {/* ⭐⭐⭐⭐ END HUB ROUTES */}
+
+        {/* 404 */}
         <Route
           path="*"
           element={
@@ -334,7 +454,7 @@ function App() {
               <AppContent />
             </div>
 
-            {/* ✅ Chat Launcher visible on all pages */}
+            {/* Chat Launcher stays outside pages */}
             <ChatLauncher />
           </Router>
         </TranslationProvider>

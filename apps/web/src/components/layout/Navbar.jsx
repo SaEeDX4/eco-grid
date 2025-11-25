@@ -63,6 +63,7 @@ const Navbar = () => {
     { to: "/dashboard", label: "Dashboard", protected: true },
     { to: "/devices", label: "Devices", protected: true },
     { to: "/optimizer", label: "Optimizer", protected: true },
+    { to: "/vpp", label: "VPP" },
     { to: "/reports", label: "Reports", protected: true },
   ];
 
