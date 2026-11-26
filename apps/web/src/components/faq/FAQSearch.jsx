@@ -55,7 +55,7 @@ const FAQSearch = ({ onSearch, onResultClick }) => {
   };
 
   // ------------------------------------------------
-  // ⭐ PORTAL DROPDOWN (absolute floating element)
+  // PORTAL DROPDOWN (absolute floating element)
   // ------------------------------------------------
   const renderDropdown = () => {
     if (!showSuggestions) return null;
