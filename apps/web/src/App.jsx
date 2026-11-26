@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import { ChatProvider } from "./context/ChatContext"; // ✅ Added ChatProvider
-import { TranslationProvider } from "./context/TranslationContext"; // ✅ Added TranslationProvider
+import { ChatProvider } from "./context/ChatContext"; // Added ChatProvider
+import { TranslationProvider } from "./context/TranslationContext"; // Added TranslationProvider
 import { useToast } from "./hooks/useToast";
 import { ToastContainer } from "./components/ui/Toast";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import ChatLauncher from "./components/chat/ChatLauncher"; // ✅ Added ChatLauncher
+import ChatLauncher from "./components/chat/ChatLauncher"; // Added ChatLauncher
 
-// ✅ Pages
+// Pages
 import LandingPage from "./pages/LandingPage";
 import DemoPage from "./pages/DemoPage";
 import LoginPage from "./pages/auth/LoginPage";
@@ -19,14 +19,13 @@ import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import VerifyEmailPage from "./pages/auth/VerifyEmailPage";
 import DashboardPage from "./pages/DashboardPage";
 import DevicesPage from "./pages/DevicesPage";
-import AboutPage from "./pages/AboutPage"; // ✅ Added for Module 13
-import OptimizerPage from "./pages/OptimizerPage"; // ✅ Module 5
-import ReportsPage from "./pages/ReportsPage"; // ✅ Added for Module 6
-import PartnersPage from "./pages/PartnersPage"; // ✅ Added for Module 14
-import ContactPage from "./pages/ContactPage"; // ✅ Added for Module 9
-import PricingPage from "./pages/PricingPage"; // ✅ Added for Module 10
+import AboutPage from "./pages/AboutPage"; // Added for Module 13
+import OptimizerPage from "./pages/OptimizerPage"; // Module 5
+import ReportsPage from "./pages/ReportsPage"; // Added for Module 6
+import PartnersPage from "./pages/PartnersPage"; // Added for Module 14
+import ContactPage from "./pages/ContactPage"; // Added for Module 9
+import PricingPage from "./pages/PricingPage"; // Added for Module 10
 
-// ✅ From Claude
 import SUVPage from "./pages/SUVPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
@@ -48,20 +47,20 @@ import FAQPage from "./pages/FAQPage";
 // Roadmap
 import RoadmapPage from "./pages/RoadmapPage";
 
-// ⭐⭐⭐ VPP Pages
+// VPP Pages
 import VPPOverviewPage from "./pages/VPPOverviewPage";
 import VPPPoolsPage from "./pages/VPPPoolsPage";
 import VPPPoolDetailPage from "./pages/VPPPoolDetailPage";
 import VPPRevenuePage from "./pages/VPPRevenuePage";
 
-// ⭐⭐⭐⭐ HUB PAGES (DO NOT DELETE)
+// HUB PAGES
 import HubList from "./pages/HubList";
 import HubOverview from "./pages/HubOverview";
 import HubPolicies from "./pages/HubPolicies";
 import HubAnalytics from "./pages/HubAnalytics";
 import HubRevenue from "./pages/HubRevenue";
 import TenantDetail from "./pages/TenantDetail";
-// ⭐⭐⭐⭐ END HUB PAGES
+// END HUB PAGES
 
 function AppContent() {
   const { toasts, removeToast } = useToast();
@@ -258,7 +257,7 @@ function AppContent() {
           }
         />
 
-        {/* ⭐⭐⭐ VPP ROUTES */}
+        {/* VPP Routes */}
         <Route
           path="/vpp"
           element={
@@ -356,7 +355,7 @@ function AppContent() {
           }
         />
 
-        {/* ⭐⭐⭐⭐ HUB ROUTES (SAFE COPY — NO REMOVALS) */}
+        {/* Hub Routes */}
         <Route
           path="/hub/list"
           element={
@@ -422,7 +421,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
-        {/* ⭐⭐⭐⭐ END HUB ROUTES */}
+        {/* End Hub Routes */}
 
         {/* 404 */}
         <Route
