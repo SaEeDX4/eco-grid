@@ -1,76 +1,140 @@
-Eco-Grid — Smart Energy Optimization Platform
-(React + Express + MongoDB + AI)
+# Eco-Grid — Smart Energy Optimization Platform
 
-Eco-Grid is a comprehensive energy management system for households and SMEs in British Columbia (Vancouver).
-It empowers users to monitor electricity usage, receive AI-powered optimization tips, and track their carbon footprint.
+A full-stack energy management platform for households and SMEs: monitor electricity
+usage, manage devices, receive AI-powered optimization recommendations, and track
+cost savings and CO₂ impact.
 
-🌐 Live Demo
-Render: https://eco-grid.onrender.com/
+![Node](https://img.shields.io/badge/Node.js-20-339933)
+![React](https://img.shields.io/badge/React-18-61DAFB)
+![Express](https://img.shields.io/badge/Express-4-000000)
+![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-🧭 Project Overview
-Eco-Grid provides an interactive dashboard that helps users understand their energy consumption and reduce costs through smart scheduling and AI insights.
-It promotes sustainable living by combining modern web technologies with intelligent analytics and clean UI/UX.
+**Live demo:** https://eco-grid.onrender.com
+**API:** https://eco-grid-api.onrender.com/api · Health: `/api/health`
 
-🏗️ Project Structure
-apps/web – React frontend (Vite)
-apps/api – Express backend
-packages/ui – Shared UI components
-packages/lib – Shared utilities
-packages/ai – AI adapter (Claude)
-packages/config – Shared configuration
-locales/ – i18n translation files
+---
 
-⚙️ Setup
-Install dependencies:
+## Overview
+
+Eco-Grid helps users understand and reduce their energy consumption. Users register,
+connect their devices, and get a live dashboard of usage, costs, and carbon footprint.
+An AI optimizer (Claude, behind a provider-adapter layer) turns usage data into
+concrete, personalized saving actions. Larger modules extend the platform to
+virtual power plants (VPP), multi-tenant energy hubs, pilots, pricing/subscriptions,
+and a content system (blog, testimonials, case studies, FAQ, roadmap).
+
+## Features
+
+- **Dashboard** — daily/monthly consumption, cost, and CO₂ visualizations
+- **Device Hub** — register devices and estimate their consumption
+- **AI Optimizer** — personalized energy-saving recommendations (Claude adapter)
+- **Reports & ESG metrics** — monthly savings and emissions reporting
+- **Virtual Power Plant (VPP)** — pools, markets, dispatch, and revenue views
+- **Energy Hubs** — multi-tenant hubs with policies, tenants, and analytics
+- **Pricing & subscriptions** — plan catalog with feature gating and upgrade flow
+- **Content platform** — articles, testimonials, case studies, pilots, FAQ, roadmap
+- **Authentication & authorization** — JWT sessions with role-based access control
+- **Internationalization** — English, Farsi (RTL), and French (`apps/web/public/locales`)
+
+## Architecture
+
+npm-workspaces monorepo:
+
+```
+eco-grid/
+├── apps/
+│   ├── web/          # React 18 + Vite + Tailwind CSS frontend
+│   └── api/          # Express + MongoDB (Mongoose) REST API
+└── packages/
+    ├── ai/           # AI provider adapters (Claude) and prompts
+    ├── ui/           # Shared UI components
+    ├── lib/          # Shared utilities
+    └── config/       # Shared configuration
+```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the system design and
+[docs/SECURITY.md](docs/SECURITY.md) for the authentication/authorization model.
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 20+
+- A MongoDB connection string (e.g. MongoDB Atlas)
+
+### Install
+
+```bash
 npm install
+```
 
-Run development servers:
-npm run dev
+### Configure environment
 
-Environment configuration – create a .env file inside apps/api with:
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+Copy the examples and fill in real values (never commit real secrets):
 
-(Optional) Add API keys for AI integrations:
-ANTHROPIC_API_KEY=your_claude_api_key
-OPENAI_API_KEY=your_openai_api_key
+```bash
+cp apps/api/.env.example apps/api/.env   # MONGODB_URI, JWT_SECRET, AI keys…
+cp apps/web/.env.example apps/web/.env   # VITE_API_URL
+```
 
-💡 Key Features
-• Interactive Dashboard – visualize daily and monthly energy usage
-• Device Hub – add and manage smart devices with estimated consumption
-• AI Optimization – generate personalized energy-saving recommendations
-• Reports & ESG Metrics – view monthly savings and CO₂ reduction
-• Multilingual Support – English, Farsi, and French
-• JWT Authentication – secure login and protected routes
-• Responsive Design – fully optimized for desktop and mobile
+### Run (development)
 
-🧰 Technologies Used
-Frontend: React (Vite), Tailwind CSS, shadcn/ui, Lucide Icons
-Backend: Node.js, Express.js
-Database: MongoDB Atlas (Mongoose)
-AI Integration: Claude / GPT API Adapter
-Deployment: Render
-Testing: Vitest / Jest, manual testing
+```bash
+npm run dev        # web (Vite) + api (Express) together
+```
 
-🪄 Usage
+- Web: http://localhost:5173
+- API: http://localhost:5000/api · health check at `/api/health`
 
-Register or log in
+### Build
 
-Add devices in the Device Hub
+```bash
+npm run build --workspace=apps/web
+```
 
-View consumption data on the Dashboard
+## API overview
 
-Use the Optimizer to see AI-generated energy-saving tips
+| Area | Base path | Access |
+|---|---|---|
+| Health | `GET /api/health` | Public |
+| Auth | `/api/auth` | Public (register/login), token for session |
+| Dashboard / Devices / Optimizer / Reports | `/api/dashboard`, `/api/devices`, `/api/optimizer`, `/api/reports` | Authenticated |
+| VPP / Hubs | `/api/vpp`, `/api/hub` | Authenticated |
+| Pricing / Subscriptions | `/api/pricing`, `/api/subscriptions` | Mixed |
+| Content | `/api/articles`, `/api/testimonials`, `/api/case-studies`, `/api/pilots`, `/api/faq`, `/api/roadmap` | Public reads, admin/editor writes |
+| Admin | `/api/faq/admin`, `/api/ai-writer` | Admin (editor where noted) |
+| System | `/api/metrics`, `/api/system` | Authenticated |
 
-Review monthly Reports to track savings and environmental impact
+Full route inventory: `GET /api` on a running server.
 
-📈 Future Improvements
-• Real smart-meter integrations (OCPP / Modbus / SunSpec)
-• Carbon-credit wallet and rewards
-• Background jobs for automated reports
-• Mobile app using React Native
+## Security
 
-🧑‍🎓 Author
-Saeed Sharifzadeh
-Software Development Bootcamp | Capstone Project
-Submitted: October 21, 2025
+- Passwords hashed with **bcrypt**; JWTs signed with a server-only secret that
+  **fails fast at startup if missing**
+- `authenticate` (401) and role-based `authorize` (403) middleware — see
+  [docs/SECURITY.md](docs/SECURITY.md)
+- Helmet headers, CORS allow-list, per-route rate limiting, Zod validation
+- Secrets live only in `.env` / deployment environment variables
+
+## Deployment
+
+Deployed on **Render** (web service + API service) with MongoDB Atlas.
+Environment variables are configured in the Render dashboard; the API loads
+`apps/api/.env` locally and platform variables in production.
+
+## Roadmap
+
+- Real smart-meter integrations (OCPP / Modbus / SunSpec)
+- Carbon-credit wallet and rewards
+- Background jobs for automated reports
+- React Native mobile app
+
+## Author
+
+**Saeed Sharifzadeh** — Software Development Bootcamp capstone project,
+submitted October 21, 2025 (Vancouver, BC).
+
+## License
+
+[MIT](LICENSE)
