@@ -1,4 +1,4 @@
-// ✅ Load environment variables explicitly from apps/api/.env
+// Load environment variables explicitly from apps/api/.env
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ This ensures the correct .env file is loaded no matter where npm is run (root or api)
+// This ensures the correct .env file is loaded no matter where npm is run (root or api)
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 import express from "express";
@@ -25,56 +25,55 @@ import partnersRoutes from "./routes/partners.js";
 import contactRoutes from "./routes/contact.js";
 import chatRoutes from "./routes/chat.js";
 
-// ⭐ ADDED FOR MOD 15 FAQ
-import faqRoutes from "./routes/faq.js"; // ⭐ ADDED
-import faqAdminRoutes from "./routes/faqAdmin.js"; // ⭐ ADDED
+// FAQ routes (Module 15)
+import faqRoutes from "./routes/faq.js";
+import faqAdminRoutes from "./routes/faqAdmin.js";
 
-// ✅ Added new pricing & subscription routes (Claude instruction)
+// Added new pricing & subscription routes
 import pricingRoutes from "./routes/pricing.js";
 import subscriptionRoutes from "./routes/subscriptions.js";
 
-// ✅ Added metrics and system routes + service (Claude instruction)
+// Added metrics and system routes + service
 import metricsRoutes from "./routes/metrics.js";
 import systemRoutes from "./routes/system.js";
 import { startMetricsCollection } from "./services/metricsService.js";
 
-// ✅ Added Blog & Content Routes (Claude instruction)
+// Added Blog & Content Routes
 import articlesRoutes from "./routes/articles.js";
 import newsletterRoutes from "./routes/newsletter.js";
 import aiWriterRoutes from "./routes/aiWriter.js";
 
-// ✅ Added Testimonials & Case Studies Routes (Module 13)
+// Added Testimonials & Case Studies Routes (Module 13)
 import testimonialsRoutes from "./routes/testimonials.js";
 import caseStudiesRoutes from "./routes/caseStudies.js";
 
-// ✅ Added Pilots Routes (Module 14)
+// Added Pilots Routes (Module 14)
 import pilotsRoutes from "./routes/pilots.js";
 
-// ⭐ ⭐ EXACTLY AS CLAUDE REQUIRED — ROADMAP ROUTES
-import roadmapRoutes from "./routes/roadmap.js"; // ⭐ EXACTLY AS CLAUDE SAID
+import roadmapRoutes from "./routes/roadmap.js";
 
-// ⭐⭐⭐ ADDED — VPP (MODULE 17)
-import vppRoutes from "./routes/vpp.js"; // ⭐ DO NOT MODIFY
+// VPP routes (Module 17)
+import vppRoutes from "./routes/vpp.js";
 
-// ⭐⭐⭐⭐ ADDED — HUB ROUTES (MODULE 18)
-import hubRoutes from "./routes/hub.js"; // ⭐ EXACTLY AS REQUESTED
+// Hub routes (Module 18)
+import hubRoutes from "./routes/hub.js";
 
 import { connectDB } from "./config/db.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Check if env loaded properly
+// Check if env loaded properly
 if (!process.env.MONGODB_URI) {
   console.warn(
     "⚠️  Warning: MONGODB_URI is missing. Make sure it's set in Render environment variables."
   );
 }
 
-// ✅ Security middleware
+// Security middleware
 app.use(helmet());
 
-// ✅ CORS — allow your local + Render frontend
+// CORS — allow your local + Render frontend
 const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
@@ -99,10 +98,10 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Connect to MongoDB
+// Connect to MongoDB
 connectDB();
 
-// ✅ Start background metrics after DB connection
+// Start background metrics after DB connection
 mongoose.connection.once("open", () => {
   console.log("✅ MongoDB connected successfully");
 
@@ -110,7 +109,7 @@ mongoose.connection.once("open", () => {
   startMetricsCollection();
 });
 
-// ✅ Health check
+// Health check
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
@@ -133,38 +132,38 @@ app.use("/api/partners", partnersRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/chat", chatRoutes);
 
-// ⭐ ADDED FAQ ROUTES (Module 15)
-app.use("/api/faq", faqRoutes); // ⭐ ADDED
-app.use("/api/faq/admin", faqAdminRoutes); // ⭐ ADDED
+// FAQ routes (Module 15)
+app.use("/api/faq", faqRoutes);
+app.use("/api/faq/admin", faqAdminRoutes);
 
-// ✅ Added new Pricing and Subscription routes (Claude instruction)
+// Added new Pricing and Subscription routes
 app.use("/api/pricing", pricingRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 
-// ✅ Metrics and System Routes (Claude instruction)
+// Metrics and System Routes
 app.use("/api/metrics", metricsRoutes);
 app.use("/api/system", systemRoutes);
 
-// ✅ Blog & Content Routes (Claude instruction)
+// Blog & Content Routes
 app.use("/api/articles", articlesRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/ai-writer", aiWriterRoutes);
 
-// ⭐ Testimonials & Case Studies Routes (Module 13)
+// Testimonials & Case Studies Routes (Module 13)
 app.use("/api/testimonials", testimonialsRoutes);
 app.use("/api/case-studies", caseStudiesRoutes);
 
-// ⭐ Pilots Routes (Module 14)
+// Pilots Routes (Module 14)
 app.use("/api/pilots", pilotsRoutes);
 
-// ⭐⭐ Roadmap Routes (Module 16)
+// Roadmap Routes (Module 16)
 app.use("/api/roadmap", roadmapRoutes);
 
-// ⭐⭐⭐ VPP Routes (MODULE 17 — Virtual Power Plant)
-app.use("/api/vpp", vppRoutes); // ⭐ DO NOT CHANGE
+// VPP routes (Module 17 — Virtual Power Plant)
+app.use("/api/vpp", vppRoutes);
 
-// ⭐⭐⭐⭐ HUB ROUTES (MODULE 18 — Ultra Critical)
-app.use("/api/hub", hubRoutes); // ⭐ EXACTLY AS CLAUDE INSTRUCTED
+// Hub routes (Module 18)
+app.use("/api/hub", hubRoutes);
 
 // =============================
 // 📌 ROOT DOC
@@ -196,7 +195,7 @@ app.get("/api", (req, res) => {
       "case-studies": "/api/case-studies",
       pilots: "/api/pilots",
       roadmap: "/api/roadmap",
-      hub: "/api/hub", // ⭐ ADDED FOR MODULE 18
+      hub: "/api/hub",
       faq: "/api/faq",
       faqAdmin: "/api/faq/admin",
       vpp: "/api/vpp",
@@ -234,7 +233,7 @@ app.listen(PORT, () => {
   console.log(`📚 API docs: http://localhost:${PORT}/api`);
   console.log(`💚 Health check: http://localhost:${PORT}/api/health`);
 
-  // 🔐 Claude API
+  // Claude API
   if (process.env.ANTHROPIC_API_KEY) {
     console.log("🤖 Claude API key detected successfully ✅");
   } else {
